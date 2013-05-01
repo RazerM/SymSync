@@ -19,7 +19,11 @@ def isDirReparsePoint(dir):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('config_file', help='Path to JSON configuration file')
+parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links.')
 args = parser.parse_args()
+
+if args.dry_run:
+    print('***** Dry Run *****\n')
 
 try:
     confFile = open(args.config_file)
@@ -44,11 +48,14 @@ for item in conf:
             print('Already a symbolic link, skipping. "{0}"'.format(symlink))
     else:
         try:
-            win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
-            if isDirReparsePoint(symlink):
-                print('Symbolic link created successfully, "{0}" -> "{1}"'.format(symlink, origin))
+            if args.dry_run:
+                print('Create symbolic link, "{0}" -> "{1}"'.format(symlink, origin))
             else:
-                print('Symbolic link not created for unknown reason. "{0}" -> "{1}"'.format(symlink, origin))
+                win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
+                if isDirReparsePoint(symlink):
+                    print('Symbolic link created successfully, "{0}" -> "{1}"'.format(symlink, origin))
+                else:
+                    print('Symbolic link not created for unknown reason. "{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
 
