@@ -1,4 +1,5 @@
 #!python3
+import argparse
 import ctypes
 import json
 import os
@@ -7,7 +8,7 @@ import win32con
 import win32file
 
 def isDirReparsePoint(dir):
-    """Determines if directory is a symbolic link."""
+    '''Determines if directory is a symbolic link.'''
     if not os.path.exists(dir):
         raise FileNotFoundError
     attr = win32file.GetFileAttributes(dir)
@@ -15,8 +16,13 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument('config_file', help='Path to JSON configuration file')
+args = parser.parse_args()
+
 try:
-    confFile = open('test-config.json')
+    confFile = open(args.config_file)
     conf = json.load(confFile)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
@@ -24,6 +30,7 @@ except ValueError as err:
 except FileNotFoundError:
     print('Config file does not exist.')
     exit()
+
 
 for item in conf:
     origin = item['directories']['origin']
