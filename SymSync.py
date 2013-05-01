@@ -19,7 +19,7 @@ def isDirReparsePoint(dir):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('config_file', help='Path to JSON configuration file')
-parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links.')
+parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links')
 args = parser.parse_args()
 
 if args.dry_run:
