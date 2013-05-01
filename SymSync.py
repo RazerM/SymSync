@@ -16,8 +16,10 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
+version = '1.0'
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='Create symbolic links to synced directories.')
+parser.add_argument('--version', '-v', action='version', version='%(prog)s {0}'.format(version))
 parser.add_argument('config_file', help='Path to JSON configuration file')
 parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links')
 args = parser.parse_args()
