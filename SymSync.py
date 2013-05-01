@@ -28,17 +28,20 @@ except FileNotFoundError:
 for item in conf:
     origin = item['directories']['origin']
     symlink = item['directories']['symlink']
-    print(item['name'])
     if not os.path.exists(origin):
         print('Origin folder "{0}" does not exist, check config.'.format(origin))
         exit()
 
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
-            print('"{0}" is already a symbolic link, skipping.'.format(symlink))
+            print('Already a symbolic link, skipping. "{0}"'.format(symlink))
     else:
         try:
             win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
+            if isDirReparsePoint(symlink):
+                print('Symbolic link created successfully, "{0}" -> "{1}"'.format(symlink, origin))
+            else:
+                print('Symbolic link not created for unknown reason. "{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
 
