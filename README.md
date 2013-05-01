@@ -1,7 +1,7 @@
 SymSync is used to create symbolic links on a local filesystem to synchronised directories, e.g. with [Dropbox](http://www.dropbox.com).
 
 ##Usage
-```bat
+```
 usage: SymSync.py [-h] [--dry-run] config_file
 
 positional arguments:
