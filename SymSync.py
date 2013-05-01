@@ -48,6 +48,8 @@ for item in conf:
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
             print('Already a symbolic link, skipping. "{0}"'.format(symlink))
+        else:
+            print('Existing directory, skipping. "{0}"'.format(symlink))
     else:
         try:
             if args.dry_run:
