@@ -1,4 +1,5 @@
 #!python3
+import argparse
 import ctypes
 import json
 import os
@@ -7,7 +8,7 @@ import win32con
 import win32file
 
 def isDirReparsePoint(dir):
-    """Determines if directory is a symbolic link."""
+    '''Determines if directory is a symbolic link.'''
     if not os.path.exists(dir):
         raise FileNotFoundError
     attr = win32file.GetFileAttributes(dir)
@@ -15,8 +16,19 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
+version = '1.0'
+
+parser = argparse.ArgumentParser(description='Create symbolic links to synced directories.')
+parser.add_argument('--version', '-v', action='version', version='%(prog)s {0}'.format(version))
+parser.add_argument('config_file', help='Path to JSON configuration file')
+parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links')
+args = parser.parse_args()
+
+if args.dry_run:
+    print('***** Dry Run *****\n')
+
 try:
-    confFile = open('test-config.json')
+    confFile = open(args.config_file)
     conf = json.load(confFile)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
@@ -25,20 +37,27 @@ except FileNotFoundError:
     print('Config file does not exist.')
     exit()
 
+
 for item in conf:
     origin = item['directories']['origin']
     symlink = item['directories']['symlink']
-    print(item['name'])
     if not os.path.exists(origin):
         print('Origin folder "{0}" does not exist, check config.'.format(origin))
         exit()
 
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
-            print('"{0}" is already a symbolic link, skipping.'.format(symlink))
+            print('Already a symbolic link, skipping. "{0}"'.format(symlink))
     else:
         try:
-            win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
+            if args.dry_run:
+                print('Create symbolic link, "{0}" -> "{1}"'.format(symlink, origin))
+            else:
+                win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
+                if isDirReparsePoint(symlink):
+                    print('Symbolic link created successfully, "{0}" -> "{1}"'.format(symlink, origin))
+                else:
+                    print('Symbolic link not created for unknown reason. "{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
 
