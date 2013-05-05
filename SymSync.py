@@ -48,8 +48,11 @@ for item in conf:
         # If origin doesn't exist, but a directory at the location of symlink does,
         # move those files to origin and create the symlink.
         if os.path.exists(symlink) and not isDirReparsePoint(symlink):
-            shutil.move(symlink, origin)
-            print('Moving existing folder. ("{0}" moved to "{1}")'.format(symlink, origin))
+            if args.dry_run:
+                print('Move existing folder. ("{0}" to "{1}")'.format(symlink, origin))
+            else:
+                shutil.move(symlink, origin)
+                print('Moving existing folder. ("{0}" moved to "{1}")'.format(symlink, origin))
 
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
