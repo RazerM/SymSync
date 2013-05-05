@@ -3,6 +3,7 @@ import argparse
 import ctypes
 import json
 import os
+import shutil
 import sys
 import win32con
 import win32file
@@ -42,8 +43,11 @@ for item in conf:
     origin = item['directories']['origin']
     symlink = item['directories']['symlink']
     if not os.path.exists(origin):
-        print('Origin folder "{0}" does not exist, check config.'.format(origin))
-        exit()
+        # If origin doesn't exist, but a directory at the location of symlink does,
+        # move those files to origin and create the symlink.
+        if os.path.exists(symlink) and not isDirReparsePoint(symlink):
+            shutil.move(symlink, origin)
+            print('Moving existing folder. ("{0}" moved to "{1}")'.format(symlink, origin))
 
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
