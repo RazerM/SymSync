@@ -27,6 +27,8 @@ args = parser.parse_args()
 
 if args.dry_run:
     print('***** Dry Run *****\n')
+else:
+    print('***** SymSync *****\n')
 
 try:
     confFile = open(args.config_file)
@@ -51,7 +53,7 @@ for item in conf:
 
     if os.path.exists(symlink):
         if isDirReparsePoint(symlink):
-            print('Already a symbolic link, skipping. "{0}"'.format(symlink))
+            print('Already a symbolic link, skipping. ("{0}")'.format(symlink))
         else:
             print('Existing directory, skipping. "{0}"'.format(symlink))
     else:
@@ -66,6 +68,7 @@ for item in conf:
                     print('Symbolic link not created for unknown reason. "{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
+    print('\n')
 
 
 confFile.close()
