@@ -1,4 +1,18 @@
 #!python3
+"""Create symbolic links to synced directories.
+
+Usage: SymSync.py [--dry-run] CONFIG_FILE
+       SymSync.py --version
+       SymSync.py -h | --help
+
+Arguments:
+    CONFIG_FILE  Path to JSON configuration file
+
+Options:
+    --dry-run   Do not create symbolic links
+    --version   Print version number
+    -h, --help  Show this help message
+"""
 import argparse
 import ctypes
 import json
@@ -7,6 +21,7 @@ import shutil
 import sys
 import win32con
 import win32file
+from docopt import docopt
 
 def isDirReparsePoint(dir):
     '''Determines if directory is a symbolic link.'''
@@ -19,19 +34,13 @@ def isDirReparsePoint(dir):
 
 version = '1.0'
 
-parser = argparse.ArgumentParser(description='Create symbolic links to synced directories.')
-parser.add_argument('--version', '-v', action='version', version='%(prog)s {0}'.format(version))
-parser.add_argument('config_file', help='Path to JSON configuration file')
-parser.add_argument('--dry-run', action='store_true', help='Do not create symbolic links')
-args = parser.parse_args()
+args = docopt(__doc__, version=version)
 
-if args.dry_run:
+if args['--dry-run']:
     print('***** Dry Run *****\n')
-else:
-    print('***** SymSync *****\n')
 
 try:
-    confFile = open(args.config_file)
+    confFile = open(args['CONFIG_FILE'])
     conf = json.load(confFile)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
@@ -48,7 +57,7 @@ for item in conf:
         # If origin doesn't exist, but a directory at the location of symlink does,
         # move those files to origin and create the symlink.
         if os.path.exists(symlink) and not isDirReparsePoint(symlink):
-            if args.dry_run:
+            if args['--dry-run']:
                 print('Move existing folder. ("{0}" to "{1}")'.format(symlink, origin))
             else:
                 shutil.move(symlink, origin)
@@ -61,7 +70,7 @@ for item in conf:
             print('Existing directory, skipping. "{0}"'.format(symlink))
     else:
         try:
-            if args.dry_run:
+            if args['--dry-run']:
                 print('Create symbolic link, "{0}" -> "{1}"'.format(symlink, origin))
             else:
                 win32file.CreateSymbolicLink(symlink, origin, win32file.SYMBOLIC_LINK_FLAG_DIRECTORY)
