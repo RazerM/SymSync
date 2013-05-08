@@ -27,8 +27,6 @@ args = parser.parse_args()
 
 if args.dry_run:
     print('***** Dry Run *****\n')
-else:
-    print('***** SymSync *****\n')
 
 try:
     confFile = open(args.config_file)
