@@ -2,17 +2,19 @@ SymSync is used to create symbolic links on a local filesystem to synchronised d
 
 ##Usage
 ```
-usage: SymSync.py [-h] [--version] [--dry-run] config_file
-
 Create symbolic links to synced directories.
 
-positional arguments:
-  config_file    Path to JSON configuration file
+Usage: SymSync.py [--dry-run] CONFIG_FILE
+       SymSync.py --version
+       SymSync.py -h | --help
 
-optional arguments:
-  -h, --help     show this help message and exit
-  --version, -v  show program's version number and exit
-  --dry-run      Do not create symbolic links
+Arguments:
+    CONFIG_FILE  Path to JSON configuration file
+
+Options:
+    --dry-run   Do not create symbolic links
+    --version   Print version number
+    -h, --help  Show this help message
 ```
 
 ##Config file
