@@ -32,7 +32,7 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
-version = '1.0'
+version = '1.1'
 
 args = docopt(__doc__, version=version)
 
