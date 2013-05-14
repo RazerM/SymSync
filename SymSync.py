@@ -84,7 +84,6 @@ for item in conf:
                           '"{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
-    print('\n')
 
 
 confFile.close()
