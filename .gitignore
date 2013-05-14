@@ -43,5 +43,5 @@ __pycache__
 *.sublime-workspace
 sftp-config*.json
 
-### Project-specific files ###
-test-config.json
+### Ignore json data files ###
+*.json
