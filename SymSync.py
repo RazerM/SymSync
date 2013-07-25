@@ -13,12 +13,13 @@ Options:
     --version   Print version number
     -h, --help  Show this help message
 """
+from docopt import docopt
 import json
 import os
 import shutil
+import sys
 import win32con
 import win32file
-from docopt import docopt
 
 
 def isDirReparsePoint(dir):
@@ -30,7 +31,7 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
-version = '1.1'
+version = '1.2'
 
 args = docopt(__doc__, version=version)
 
@@ -42,10 +43,10 @@ try:
     conf = json.load(confFile)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
-    exit()
+    sys.exit()
 except FileNotFoundError:
     print('Config file does not exist.')
-    exit()
+    sys.exit()
 
 
 for item in conf:
