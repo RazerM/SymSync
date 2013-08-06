@@ -39,8 +39,8 @@ if args['--dry-run']:
     print('***** Dry Run *****\n')
 
 try:
-    confFile = open(args['CONFIG_FILE'])
-    conf = json.load(confFile)
+    with open(args['CONFIG_FILE']) as f:
+        conf = json.load(f)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
     sys.exit()
@@ -85,6 +85,3 @@ for item in conf:
                           '"{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
-
-
-confFile.close()
