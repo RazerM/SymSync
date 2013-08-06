@@ -31,7 +31,7 @@ def isDirReparsePoint(dir):
         raise TypeError('"{0}" is not a directory'.format(dir))
     return bool(attr & win32con.FILE_ATTRIBUTE_REPARSE_POINT)
 
-version = '1.2'
+version = '1.2.1'
 
 args = docopt(__doc__, version=version)
 
@@ -39,8 +39,8 @@ if args['--dry-run']:
     print('***** Dry Run *****\n')
 
 try:
-    confFile = open(args['CONFIG_FILE'])
-    conf = json.load(confFile)
+    with open(args['CONFIG_FILE']) as f:
+        conf = json.load(f)
 except ValueError as err:
     print('Error loading config file:\n{0}'.format(err))
     sys.exit()
@@ -85,6 +85,3 @@ for item in conf:
                           '"{0}" -> "{1}"'.format(symlink, origin))
         except Exception as err:
             print('Unknown error: {0}'.format(err))
-
-
-confFile.close()
